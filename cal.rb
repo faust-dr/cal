@@ -64,7 +64,6 @@ class Calendar
 			end
 		else
 			print_month(@month)
-			puts
 		end
 	end
 end
