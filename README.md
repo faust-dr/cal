@@ -3,7 +3,7 @@ cal
 
 This Ruby script can replace the UNIX `cal` tool. I basically wanted it to highlight the current date, and to show week days and weekends in a separate color.
 
-It follows some of the `cal` command line options, mostly for speficying month and year. It's not a complete replacement, as I haven't needed all that the original `cal` does.
+It follows some of the `cal` command line options, mostly for specifying month and year. It's not a complete replacement, as I haven't needed all that the original `cal` does.
 
 Usage:
 
