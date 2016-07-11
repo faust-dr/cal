@@ -13,4 +13,13 @@ Usage:
 
 `cal -y 2017` Show calendars for all months of the year 2017
 
+`cal -f calendar_file` Reads calendar_file for dates to highlight
+
+Calendar file example:
+`July 10th, 2016:
+	Do laundry
+	Call mom`
+
+Every line ending in a colon is passed to `Date.parse`, and if successfully parsed, highlighted in yellow on the calendar.
+
 Note: This version currently does not show months side by side, like the original `cal` does. Instead, they're listed one after the other.

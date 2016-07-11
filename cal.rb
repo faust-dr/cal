@@ -7,9 +7,22 @@ class Calendar
 	COMMON_YEAR_DAYS_IN_MONTH = [nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 	def initialize(date_hash)
-		@month = date_hash['m'] || Date.today.month
-		@year = date_hash['y'] || Date.today.year
+		@month = (date_hash['m'] || Date.today.month).to_i
+		@year = (date_hash['y'] || Date.today.year).to_i
 		@show_year = !!date_hash['y']
+		@appointment_dates = date_hash['f'] ? load_calendar_file(date_hash['f']) : []
+	end
+
+	def parse_date(string)
+		Date.parse(string)
+	rescue ArgumentError => e
+		nil
+	end
+
+	def load_calendar_file(filename)
+		raise "Calendar file #{filename} doesn't exist" unless File.exists?(filename)
+		file = File.read(filename)
+		file.lines.select{|line| line.match /:\n/}.map{|line| line.gsub(":\n", '')}.map{|line| parse_date(line)}.compact
 	end
 
 	def days_in_month(month, year = Time.now.year)
@@ -24,13 +37,18 @@ class Calendar
 
 	def print_day(month, day)
 		print ' ' if day < 10
-		if Date.today == Date.new(@year, month, day)
-			print day.to_s.colorize(:red)
-		elsif weekend?(month, day)
-			print day.to_s.colorize(:grey)
-		else
-			print day.to_s.colorize(:white)
-		end
+
+		date = Date.new(@year, month, day)
+		color = if Date.today == date
+							@appointment_dates.include?(date) ? :cyan : :red
+						elsif @appointment_dates.include?(date)
+							:yellow
+						elsif weekend?(month, day)
+							:grey
+						else
+							:white
+						end
+		print day.to_s.colorize(color)
 		print ' '
 	end
 
@@ -70,6 +88,6 @@ end
 
 args = {}
 for i in (0..ARGV.length - 1).step(2) do
-	args[ARGV[i].gsub('-', '')] = ARGV[i+1].to_i
+	args[ARGV[i].gsub('-', '')] = ARGV[i+1]
 end
 Calendar.new(args).print_all
